@@ -71,7 +71,7 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
       end
     else
       n_size = []
-      cropfocus = []
+      crop_focus = []
       if size.to_s.split("x").size <= 2
         n_size = [img.width, img.height] / size.to_s
       else
@@ -79,10 +79,8 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
         all_dim = size.to_s.split("x")
         Rails.logger.info "This is "
         Rails.logger.info  size.to_s
-        n_size = [img.width, img.height] / [all_dim[0].to_i, all_dim[1].to_i]
-        crop_focus = [alldim[2.to_i],alldim[3].to_i]
-        Rails.logger.info "This is "
-        Rails.logger.info  size.to_s
+        n_size = [img.width, img.height] / [all_dim[0], all_dim[1]].join("x")
+        crop_focus = [all_dim[2].to_i,all_dim[3].to_i]
       end
       
       if size.ends_with? "!"
@@ -91,12 +89,15 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
         w, h = (ih * aspect), (iw / aspect)
         w = [iw, w].min.to_i
         h = [ih, h].min.to_i
-        if cropfocus.blank?
+        if crop_focus.blank?
           img.with_crop( (iw-w)/2, (ih-h)/2, (iw+w)/2, (ih+h)/2) {
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         else
-          img.with_crop( cropfocus[0], cropfocus[1], w, h) {
+          Rails.logger.info "Cropfocus"
+          Rails.logger.info  cropfocus
+          
+          img.with_crop( crop_focus[0], crop_focus[1], w, h) {
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         end

@@ -72,13 +72,17 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
     else
       n_size = []
       cropfocus = []
-      if size.to_s.size <= 4
+      if size.to_s.split("x").size <= 2
         n_size = [img.width, img.height] / size.to_s
       else
         #To allow pass through of cropping
         all_dim = size.to_s.split("x")
-        n_size = [img.width, img.height] / [all_dim[0], all_dim[1]]
-        crop_focus = [alldim[2],alldim[3[0]]]
+        Rails.logger.info "This is "
+        Rails.logger.info  size.to_s
+        n_size = [img.width, img.height] / [all_dim[0].to_i, all_dim[1].to_i]
+        crop_focus = [alldim[2.to_i],alldim[3].to_i]
+        Rails.logger.info "This is "
+        Rails.logger.info  size.to_s
       end
       
       if size.ends_with? "!"

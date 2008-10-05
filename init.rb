@@ -50,6 +50,8 @@ end
 
 Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
 
+  attr_accessor :cropfocus
+
   def resize_image(img, size)
     # create a dummy temp file to write to
     self.temp_path = write_to_temp_file(filename)
@@ -68,16 +70,33 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
         img.resize(size[0], size[1], &grab_dimensions)
       end
     else
-      n_size = [img.width, img.height] / size.to_s
+      n_size = []
+      cropfocus = []
+      if size.to_s.size <= 4
+        n_size = [img.width, img.height] / size.to_s
+      else
+        #To allow pass through of cropping
+        all_dim = size.to_s.split("x")
+        n_size = [img.width, img.height] / [all_dim[0], all_dim[1]]
+        crop_focus = [alldim[2],alldim[3]]
+      end
+      
       if size.ends_with? "!"
         aspect = n_size[0].to_f / n_size[1].to_f
         ih, iw = img.height, img.width
         w, h = (ih * aspect), (iw / aspect)
         w = [iw, w].min.to_i
         h = [ih, h].min.to_i
-        img.with_crop( (iw-w)/2, (ih-h)/2, (iw+w)/2, (ih+h)/2) {
-          |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
-        }
+        if cropfocus.blank?
+          img.with_crop( (iw-w)/2, (ih-h)/2, (iw+w)/2, (ih+h)/2) {
+            |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
+          }
+        else
+          img.with_crop( cropfocus[0], cropfocus[1], w, h) {
+            |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
+          }
+        end
+          
       else
         img.resize(n_size[0], n_size[1], &grab_dimensions)
       end

@@ -78,7 +78,7 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
         #To allow pass through of cropping
         all_dim = size.to_s.split("x")
         n_size = [img.width, img.height] / [all_dim[0], all_dim[1]]
-        crop_focus = [alldim[2],alldim[3]]
+        crop_focus = [alldim[2],alldim[3[0]]]
       end
       
       if size.ends_with? "!"

@@ -49,9 +49,6 @@ Geometry.module_eval do
 end
 
 Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
-
-  attr_accessor :cropfocus
-
   def resize_image(img, size)
     # create a dummy temp file to write to
     self.temp_path = write_to_temp_file(filename)
@@ -77,10 +74,9 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
       else
         #To allow pass through of cropping
         all_dim = size.to_s.split("x")
-        Rails.logger.info "This is "
-        Rails.logger.info  size.to_s
         n_size = [img.width, img.height] / [all_dim[0], all_dim[1]].join("x")
         crop_focus = [all_dim[2].to_i,all_dim[3].to_i]
+        box_size = all_dim[4].to_i
       end
       
       if size.ends_with? "!"
@@ -96,8 +92,7 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
         else
           Rails.logger.info "Cropfocus"
           Rails.logger.info  cropfocus
-          
-          img.with_crop( crop_focus[0], crop_focus[1], w, h) {
+          img.with_crop( crop_focus[0], crop_focus[1], crop_focus[0] + all_dim[4], crop_focus[1] + all_dim[4]) {
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         end

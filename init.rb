@@ -90,9 +90,7 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         else
-          Rails.logger.info "Cropfocus"
-          Rails.logger.info  size
-          img.with_crop( crop_focus[0], crop_focus[1], crop_focus[0] + all_dim[4], crop_focus[1] + all_dim[4]) {
+          img.with_crop( crop_focus[0].to_i, crop_focus[1].to_i, crop_focus[0].to_i + all_dim[4].to_i, crop_focus[1].to_i + all_dim[4].to_i) {
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         end

@@ -52,7 +52,7 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
   def resize_image(img, size)
     filename.sub! /gif$/, 'png'
     content_type.sub!(/gif$/, 'png')
-    temp_paths.unshift write_to_temp_file(filename)
+    self.temp_path = write_to_temp_file(filename)
     # create a dummy temp file to write to
     #self.temp_path = write_to_temp_file(filename)
     # create a dummy temp file to write to

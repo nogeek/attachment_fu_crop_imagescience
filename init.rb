@@ -50,8 +50,8 @@ end
 
 Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
   def resize_image(img, size)
-    filename.sub! /gif$/, 'png'
-    content_type.sub!(/gif$/, 'png')
+    # filename.sub! /gif$/, 'png'
+    #  content_type.sub!(/gif$/, 'png')
     self.temp_path = write_to_temp_file(filename)
     # create a dummy temp file to write to
     #self.temp_path = write_to_temp_file(filename)
@@ -80,7 +80,6 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
         all_dim = size.to_s.split("x")
         n_size = [img.width, img.height] / [all_dim[0], all_dim[1]].join("x")
         crop_focus = [all_dim[2].to_i,all_dim[3].to_i]
-        box_size = all_dim[4].to_i
       end
       
       if size.ends_with? "!"
@@ -94,7 +93,7 @@ Technoweenie::AttachmentFu::Processors::ImageScienceProcessor.module_eval do
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         else
-          img.with_crop( crop_focus[0].to_i, crop_focus[1].to_i, crop_focus[0].to_i + all_dim[4].to_i, crop_focus[1].to_i + all_dim[4].to_i) {
+          img.with_crop( crop_focus[0].to_i, crop_focus[1].to_i, (crop_focus[0].to_i + all_dim[4].to_i), (crop_focus[1].to_i + all_dim[4].to_i)) {
             |crop| crop.resize(n_size[0], n_size[1], &grab_dimensions )
           }
         end
